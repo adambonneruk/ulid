@@ -1,5 +1,5 @@
 from ulid import Ulid
 
-test_ulid = Ulid()
-
-print(test_ulid)
+for _ in range(10):
+	test_ulid = Ulid()
+	print(test_ulid)
