@@ -33,11 +33,3 @@ class Ulid:
     # Public Methods
     def __str__(self):
         return str(self._ulid)
-
-def main():
-    for _ in range(10): # check timestamp
-        my_ulid = Ulid()
-        print(my_ulid)
-
-if __name__ == '__main__':
-    main()
