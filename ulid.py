@@ -1,11 +1,9 @@
 import os
-import sys
 import time
 import codecs
 
 ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 LENCODING = len(ENCODING)
-PY3 = sys.version_info[0] == 3
 
 class Ulid:
     """ulid is a universally unique lexicographically sortable identifier"""
@@ -25,7 +23,7 @@ class Ulid:
 
     def __encode_random_16bytes(self):
         b = os.urandom(10)
-        x = int(codecs.encode(b, 'hex') if PY3 else b.encode('hex'), 16)
+        x = int(codecs.encode(b, 'hex'), 16)
         s = ''
         while len(s) < 16:
             x, i = divmod(x, LENCODING)
