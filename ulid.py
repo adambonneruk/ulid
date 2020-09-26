@@ -1,7 +1,3 @@
-# Python port of https://github.com/alizain/ulid
-# https://github.com/mdipierro/ulid
-# License MIT
-from __future__ import print_function
 import os
 import sys
 import time
@@ -9,47 +5,41 @@ import codecs
 
 ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 LENCODING = len(ENCODING)
-
-
 PY3 = sys.version_info[0] == 3
-    
-def encode_time_10bytes(x):
-    s = ''
-    while len(s) < 10:
-        x, i = divmod(x, LENCODING)
-        s = ENCODING[i] + s
-    return s
 
-def encode_random_16bytes():
-    b = os.urandom(10)
-    x = int(codecs.encode(b, 'hex') if PY3 else b.encode('hex'), 16)
-    s = ''
-    while len(s) < 16:
-        x, i = divmod(x, LENCODING)
-        s = ENCODING[i] + s
-    return s
+class Ulid:
+    """ulid is a universally unique lexicographically sortable identifier"""
+    def __init__(self):
+        self._ulid = self.__generate_ulid()
 
-def convert(chars):
-    i = 0
-    n = len(chars)-1
-    for k, c in enumerate(chars):
-        i = i + 32**(n-k) * ENCODING.index(c)
-    return i
+    # Private Methods
+    def __generate_ulid(self):
+        return self.__encode_time_10bytes(int(time.time()*1000)) + self.__encode_random_16bytes()
 
-def seconds(ulid):
-    """ return the timestamp from a ulid """
-    return 0.001*convert(ulid[:10])
+    def __encode_time_10bytes(self, x):
+        s = ''
+        while len(s) < 10:
+            x, i = divmod(x, LENCODING)
+            s = ENCODING[i] + s
+        return s
 
-def sharding(ulid, partitions):
-    """ return a sharting partition where to store the ulid"""
-    return convert(ulid[-16:]) % partitions
+    def __encode_random_16bytes(self):
+        b = os.urandom(10)
+        x = int(codecs.encode(b, 'hex') if PY3 else b.encode('hex'), 16)
+        s = ''
+        while len(s) < 16:
+            x, i = divmod(x, LENCODING)
+            s = ENCODING[i] + s
+        return s
 
-def ulid():
-    return encode_time_10bytes(int(time.time()*1000)) + encode_random_16bytes()
+    # Public Methods
+    def __str__(self):
+        return str(self._ulid)
 
 def main():
-    for _ in range(10):
-        print(ulid())
+    for _ in range(10): # check timestamp
+        my_ulid = Ulid()
+        print(my_ulid)
 
 if __name__ == '__main__':
     main()
